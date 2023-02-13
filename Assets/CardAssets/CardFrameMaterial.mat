@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CardFrameMaterial
-  m_Shader: {fileID: -6465566751694194690, guid: db3d15416cf3ef7488ac6e6344d980cd, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: e1c11f5d7b7765644ae526b65169d76b, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -56,11 +56,31 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_0a448c1428d2487d8969056b2631bb07_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_22b1fcfff5344a2f9ab540801e053b82_Texture_1:
         m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_2806680c396b429a9342791caf469635_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_42d38735de97497c8cc1e8b0b8df2a24_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_c6d97fb2af6845c68d8088809272d730_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_e31e5886b8af4ebcb72d9989881b7e97_Texture_1:
+        m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f516a33d3b31453f80936dc6790670d8_Texture_1:
         m_Texture: {fileID: 2800000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -90,6 +110,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _Flutness: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -107,5 +128,5 @@ Material:
     - _Background: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TopColor: {r: 1542.185, g: 1756.3369, b: 470.56567, a: 1}
+    - _TopColor: {r: 1, g: 0.7223857, b: 0, a: 1}
   m_BuildTextureStacks: []

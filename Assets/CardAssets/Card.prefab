@@ -128,6 +128,7 @@ MonoBehaviour:
   _frame: {fileID: 3699376598067129419}
   _header: {fileID: 3699376597371397515}
   _canvas: {fileID: 3699376596645242428}
+  _glowFrameMaterial: {fileID: 2100000, guid: cd3989935e582b4448d24522ebdafb78, type: 2}
 --- !u!65 &7286274133202573211
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -224,7 +225,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1785836877
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 21a46a9facb57614e85047668795a0df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -308,7 +309,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1785836877
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: -2
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -527,7 +528,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1785836877
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: f776e83120de0f342bc5ac48efb11bcd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
