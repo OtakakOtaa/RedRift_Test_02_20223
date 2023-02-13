@@ -13,7 +13,7 @@ namespace CodeBase.DragAndDrop
             {
                 _gripedObject = gripedObject;
                 _isAlreadyGriped = true;
-                _gripedObject.StartCaptured?.Invoke();
+                _gripedObject.StartCaptured?.Invoke(_gripedObject.transform);
             }
             else if(_isAlreadyGriped && !Input.GetMouseButton(0))
             {

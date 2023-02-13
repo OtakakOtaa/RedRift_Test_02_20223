@@ -45,7 +45,7 @@ namespace CodeBase.Hand.View
             InitializeEnded?.Invoke();
         }
 
-        private void EnableFrameGlow()
+        private void EnableFrameGlow(Transform card)
             => _glowFrameMaterial.SetFloat(_glowFrameShader.PowerValueId, _glowFrameShader.OnEnableGlowAmount);
 
         private void DisableFrameGlow()

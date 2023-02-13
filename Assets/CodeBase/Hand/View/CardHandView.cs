@@ -4,8 +4,6 @@ using System.Linq;
 using CodeBase.DragAndDrop;
 using CodeBase.Hand.Model;
 using CodeBase.Infrastructure;
-using DG.Tweening;
-using NSTools.Core;
 using UnityEngine;
 
 namespace CodeBase.Hand.View
@@ -21,41 +19,31 @@ namespace CodeBase.Hand.View
         private readonly CardsPositionCalculator _cardsPositionCalculator;
         private readonly LayerCardSorter _layerCardSorter;
         private readonly CardHolder _cardHolder;
+        private readonly CardsAnimationPlayer _cardsAnimationPlayer;
 
         private readonly List<CardView> _cards = new();
 
         private bool _isFirstCardsPut = true;
-        private Transform[] _startTransformCardsForAnimation;
-        private CardsPositionCalculator.CardPosition[] _newCardsPosition;
-
-        private Vector3 _originCapturedCardPosition;
-        private Quaternion _originCapturedCardRotation;
-        private Vector3 _capturedPositionCardBeforeAnimation;
         private CardView _capturedCard;
 
-        public CardHandView(CardsHand cardsHand, IEnumerable<Sprite> images,
+        public CardHandView(CardsHand cardsHand, IEnumerable<Sprite> images, 
             IDestroyer destroyer, IGameObjectCreator creator, Transform cardHolderPosition, Settings settings)
         {
             _settings = settings;
             _destroyer = destroyer;
             _cardsHand = cardsHand;
             _creator = creator;
+            
             _cardsPositionCalculator = new CardsPositionCalculator(settings.PositionCalculatorSettings);
+            _cardsAnimationPlayer = new CardsAnimationPlayer(settings.CardsAnimationSettings);
             _layerCardSorter = new LayerCardSorter();
             _cardHolder = new CardHolder(cardHolderPosition);
-            
+
             cardsHand.CardChanged += UpdateCard;
             cardsHand.CardDeleted += DeleteCard;
-            CreateCardsView(images);
             
-            foreach (var card in _cards)
-            {
-                card.InitializeEnded += () =>
-                {
-                    card.GrippeableObject.StartCaptured += () => OnStartCaptured(card);
-                    card.GrippeableObject.StopCaptured += OnEndCaptured;
-                };
-            }
+            CreateCardsView(images);
+            SubscribeToCardViews();
         }
 
         public void PutCards()
@@ -63,21 +51,23 @@ namespace CodeBase.Hand.View
             var putPoints = _cardsPositionCalculator.GetPositionPoints(_cards.Count).ToArray();
             if (_isFirstCardsPut)
             {
-                for (var i = 0; i < _cards.Count; i++)
+                for (var i = 0; i < _cards.Count; i++) 
                 {
                     _cards[i].transform.position = putPoints[i].Position;
                     _cards[i].transform.rotation = putPoints[i].Rotation;
                 }
-
+                
                 SortCardsByLayerOrder();
                 _isFirstCardsPut = false;
                 return;
             }
-
-            _newCardsPosition = putPoints;
-            _startTransformCardsForAnimation = _cards.Select(card => card.transform).ToArray();
-            DOTween.To(CardsPermutationAnimation, 0f, 1f, _settings.PermutationSpeed);
-            SortCardsByLayerOrder();
+            
+            _cardsAnimationPlayer.PlayCardsPermutationAnimation(
+                cards: _cards.Select(_ => _.transform).ToArray(),
+                newPosition: putPoints
+            );
+            
+            SortCardsByLayerOrder(); 
         }
 
         private void UpdateCard(int position, Card card)
@@ -87,6 +77,7 @@ namespace CodeBase.Hand.View
 
         private void DeleteCard(int position)
         {
+            UnSubscribeFromCardView(_cards[position]);
             _destroyer.DestroyObject(_cards[position].gameObject);
             _cards.RemoveAt(position);
             PutCards();
@@ -106,33 +97,13 @@ namespace CodeBase.Hand.View
         private void SortCardsByLayerOrder()
             => _layerCardSorter.SortCards(_cards);
 
-        private void CardsPermutationAnimation(float delta)
+        
+        private void OnStartCaptured(Transform capturedCard)
         {
-            var eDelta = EZ.BackIn(delta);
-            for (var i = 0; i < _cards.Count; i++)
-            {
-                _cards[i].transform.position = Vector3.Lerp(
-                    _startTransformCardsForAnimation[i].transform.position,
-                    _newCardsPosition[i].Position,
-                    eDelta);
-
-                _cards[i].transform.rotation = Quaternion.Lerp(
-                    _startTransformCardsForAnimation[i].transform.rotation,
-                    _newCardsPosition[i].Rotation,
-                    eDelta);
-            }
+            _capturedCard = capturedCard.GetComponent<CardView>();
+            _cardsAnimationPlayer.PlayStartCatchAnimation(_capturedCard.transform);
         }
-
-        private void OnStartCaptured(CardView capturedCard)
-        {
-            var transform = capturedCard.transform;
-            _originCapturedCardPosition = transform.position;
-            _originCapturedCardRotation = transform.rotation;
-
-            _capturedCard = capturedCard;
-            _capturedCard.transform.DORotate(Quaternion.identity.eulerAngles, _settings.RotationSpeed);
-        }
-
+        
         private void OnEndCaptured()
         {
             if (_cardHolder.TryCanHoldCard(_capturedCard))
@@ -140,39 +111,36 @@ namespace CodeBase.Hand.View
                 PutCards();
                 return;
             }
-            
-            _capturedPositionCardBeforeAnimation = _capturedCard.transform.position;
-            DOTween.To(ReturnToHandAnimation, 0f, 1f, _settings.ReturnCardSpeed);
+            _cardsAnimationPlayer.PlayCardReturnAnimation(_capturedCard.transform);
+        }
 
-            void ReturnToHandAnimation(float delta)
+        private void SubscribeToCardViews()
+        {
+            foreach (var card in _cards)
             {
-                var eDelta = EZ.QuadOut(delta);
-                _capturedCard.transform.position = Vector3.Lerp(
-                    _capturedPositionCardBeforeAnimation,
-                    _originCapturedCardPosition,
-                    eDelta);
-                _capturedCard.transform.rotation = Quaternion.Lerp(
-                    Quaternion.identity,
-                    _originCapturedCardRotation,
-                    eDelta);
+                card.InitializeEnded += () =>
+                {
+                    card.GrippeableObject.StartCaptured += OnStartCaptured;
+                    card.GrippeableObject.StopCaptured += OnEndCaptured;
+                };
             }
         }
 
+        private void UnSubscribeFromCardView(CardView cardView)
+        {
+            cardView.GrippeableObject.StartCaptured -= OnStartCaptured;
+            cardView.GrippeableObject.StopCaptured -= OnEndCaptured;
+        }
 
-        [Serializable]
-        public class Settings
+        [Serializable] public class Settings
         {
             [SerializeField] private CardsPositionCalculator.Settings _positionCalculatorSettings;
             [SerializeField] private GameObject _cardPrefab;
-            [SerializeField, Range(0, 2)] private float _permutationAnimationSpeed;
-            [SerializeField, Range(0, 0.5f)] private float _rotationSpeed;
-            [SerializeField, Range(0, 3f)] private float _returnCardAnimationSpeed;
-
+            [SerializeField] private CardsAnimationPlayer.CardsAnimationSettings _cardsAnimationSettings;
+            
             public GameObject CardPrefab => _cardPrefab;
             public CardsPositionCalculator.Settings PositionCalculatorSettings => _positionCalculatorSettings;
-            public float PermutationSpeed => _permutationAnimationSpeed;
-            public float RotationSpeed => _rotationSpeed;
-            public float ReturnCardSpeed => _returnCardAnimationSpeed;
+            public CardsAnimationPlayer.CardsAnimationSettings CardsAnimationSettings => _cardsAnimationSettings;
         }
     }
 }

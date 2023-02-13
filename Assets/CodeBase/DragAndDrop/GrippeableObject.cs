@@ -6,7 +6,7 @@ namespace CodeBase.DragAndDrop
     [RequireComponent(typeof(Collider))]
     public class GrippeableObject : MonoBehaviour
     {
-        public Action StartCaptured;
+        public Action<Transform> StartCaptured;
         public Action StopCaptured;
     }
 }
