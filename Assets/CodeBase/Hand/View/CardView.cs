@@ -82,7 +82,7 @@ namespace CodeBase.Hand.View
         class GlowFrameShader
         {
             public int PowerValueId => Shader.PropertyToID("_Flutness");
-            public float OnEnableGlowAmount => 0.009f;
+            public float OnEnableGlowAmount => 0.05f;
             public float OnDisableGlowAmount => default;
         }
     }
